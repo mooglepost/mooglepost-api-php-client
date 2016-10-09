@@ -1,0 +1,15 @@
+{
+	"name": "mooglepost/mooglepost-api-php-client",
+	"type": "library",
+	"description": "PHP client library for MooglePost API",
+	"keywords": ["php", "client", "library", "mooglepost", "api"],
+	"authors": [{"name": "MooglePost", "email": "support@mooglepost.com"}],
+	"license": "MIT",
+	"version": "1.0.0",
+	"require": {
+		"phyrexia/http": "^2.0"
+	},
+	"autoload": {
+		"psr-4": {"MooglePost\\": "src/"}
+	}
+}
