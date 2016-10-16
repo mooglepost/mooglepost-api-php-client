@@ -16,6 +16,7 @@ class Email implements \JsonSerializable {
 	private $text;
 	private $html;
 	private $recipients = array();
+	private $embedded = array();
 
 	public function __construct($email) {
 		$this->addRecipient($email);
@@ -102,6 +103,16 @@ class Email implements \JsonSerializable {
 		return $this;
 	}
 
+	public function addEmbedded(array $embedded) {
+		$this->embedded[] = $embedded;
+
+		return true;
+	}
+
+	public function getEmbedded() {
+		return $this->embedded;
+	}
+
 	public function jsonSerialize() {
 		$array = array(
 			'templateName' => $this->getTemplateName(),
@@ -120,6 +131,10 @@ class Email implements \JsonSerializable {
 		}
 		if (! is_null($this->getHtml())) {
 			$array['html'] = $this->getHtml();
+		}
+
+		if (count($this->getEmbedded()) > 0) {
+			$array['embedded'] = $this->getEmbedded();
 		}
 
 		return $array;
