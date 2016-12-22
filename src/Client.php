@@ -31,7 +31,7 @@ class Client {
 	public function sendEmail(Email $email) {
 		try {
 			$HttpClient = new \Phyrexia\Http\Client();
-			$HttpRequest = new \Phyrexia\Http\Request('POST', $this->url, array('X-AUTH-APIKEY' => $this->apiKey));
+			$HttpRequest = new \Phyrexia\Http\Request('POST', $this->url, array('X-Mglpst-ApiKey' => $this->apiKey));
 			$HttpClient->setRequest($HttpRequest);
 			$HttpClient->setPostData(json_encode($email));
 			$HttpResponse = $HttpClient->send();
