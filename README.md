@@ -13,7 +13,7 @@ PHP client library for MooglePost API
 
 Install directly via [Composer](https://getcomposer.org/):
 ```bash
-$ composer require mooglepost-api-php-client
+$ composer require mooglepost/mooglepost-api-php-client
 ```
 
 ## Basic Usage
