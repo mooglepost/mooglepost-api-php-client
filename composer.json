@@ -5,7 +5,6 @@
 	"keywords": ["php", "client", "library", "mooglepost", "api"],
 	"authors": [{"name": "MooglePost", "email": "support@mooglepost.com"}],
 	"license": "MIT",
-	"version": "1.0.0",
 	"require": {
 		"phyrexia/http": "^2.0"
 	},
