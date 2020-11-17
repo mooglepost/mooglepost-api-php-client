@@ -6,47 +6,59 @@
  * @author Jérémy 'Jejem' Desvages <jejem@phyrexia.org>
  * @copyright Jérémy 'Jejem' Desvages
  * @license The MIT License (MIT)
-**/
+ */
 
 namespace MooglePost;
 
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 
-class Client
+class Client implements ClientInterface
 {
     private $apiKey;
-    private $apiUrl = 'https://mooglepost.com/api/v1/';
+    private $apiUrl;
 
-    public function __construct(string $apiKey, string $apiUrl = null)
+    public function __construct(string $apiKey, string $apiUrl = 'https://mooglepost.com/api/v1/')
+    {
+        $this->setApiKey($apiKey);
+        $this->setApiUrl($apiUrl);
+    }
+
+    public function setApiKey(string $apiKey): ClientInterface
     {
         $this->apiKey = $apiKey;
 
-        if ($apiUrl !== null) {
-            $this->apiUrl = $apiUrl;
-        }
+        return $this;
+    }
+
+    public function setApiUrl(string $apiUrl): self
+    {
+        $this->apiUrl = $apiUrl;
+
+        return $this;
     }
 
     public function send(
         string $to,
         string $templateName,
         array $variables = [],
-        ?string $subject = null,
-        ?string $text = null,
-        ?string $html = null
-    ) {
-        $email = new Email($to);
-        $email->setTemplateName($templateName)
-              ->setVariables($variables)
-              ->setSubject($subject)
-              ->setText($text)
-              ->setHtml($html)
-        ;
+        string $subject = null,
+        string $text = null,
+        string $html = null
+    ): bool {
+        $email = new Email();
+        $email->addRecipient($to);
+        $email->setTemplateName($templateName);
+        $email->setVariables($variables);
+
+        $email->setSubject($subject);
+        $email->setText($text);
+        $email->setHtml($html);
 
         return $this->sendEmail($email);
     }
 
-    public function sendEmail(Email $email)
+    public function sendEmail(EmailInterface $email): bool
     {
         try {
             $httpClient = new \GuzzleHttp\Client([
@@ -65,7 +77,7 @@ class Client
             throw new ClientException($e->getMessage(), $e->getCode(), $e);
         }
 
-        $ret = json_decode((string) $httpResponse, true);
+        $ret = json_decode((string) $httpResponse->getBody(), true);
         if ($ret['status'] !== 'OK') {
             throw new ClientException($ret['message'], $ret['code']);
         }

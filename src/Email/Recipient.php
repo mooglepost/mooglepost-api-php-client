@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Email/Recipient.php
+ * AbstractEmail/Recipient.php
  *
  * @author Jérémy 'Jejem' Desvages <jejem@phyrexia.org>
  * @copyright Jérémy 'Jejem' Desvages
  * @license The MIT License (MIT)
-**/
+ */
 
 namespace MooglePost\Email;
 
@@ -16,12 +16,17 @@ class Recipient implements JsonSerializable
 {
     private $email;
 
+    public function __construct(string $email)
+    {
+        $this->setEmail($email);
+    }
+
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): Recipient
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -31,7 +36,12 @@ class Recipient implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'email' => $this->getEmail()
+            'email' => $this->getEmail(),
         ];
+    }
+
+    public function __toString()
+    {
+        return json_encode($this);
     }
 }
