@@ -94,8 +94,8 @@ class Email extends AbstractEmail
             $array['html'] = $this->getHtml();
         }
 
-        if (count($this->getEmbedded()) > 0) {
-            $array['embedded'] = $this->getEmbedded();
+        if (count($this->getEmbeds()) > 0) {
+            $array['embeds'] = $this->getEmbeds();
         }
 
         if (count($this->getAttachments()) > 0) {
