@@ -66,6 +66,17 @@ class Email extends AbstractEmail
         return $this;
     }
 
+    public function addEmbeddedImage(string $path, string $cid): bool
+    {
+        $this->addEmbed([
+            'type' => 'image/' . pathinfo($path, PATHINFO_EXTENSION),
+            'cid' => $cid,
+            'content' => base64_encode(file_get_contents($path))
+        ]);
+
+        return true;
+    }
+
     public function getAttachments(): array
     {
         return $this->attachments;
