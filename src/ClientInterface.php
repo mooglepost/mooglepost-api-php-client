@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ClientException.php
+ * ClientInterface.php
  *
  * @author Jérémy 'Jejem' Desvages <jejem@phyrexia.org>
  * @copyright Jérémy 'Jejem' Desvages
@@ -10,8 +10,9 @@
 
 namespace MooglePost;
 
-use Exception;
-
-class ClientException extends Exception
+interface ClientInterface
 {
+    public function setApiKey(string $apiKey): self;
+
+    public function sendEmail(EmailInterface $email): bool;
 }

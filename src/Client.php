@@ -1,49 +1,87 @@
 <?php
+
 /**
  * Client.php
  *
  * @author Jérémy 'Jejem' Desvages <jejem@phyrexia.org>
  * @copyright Jérémy 'Jejem' Desvages
  * @license The MIT License (MIT)
-**/
+ */
 
 namespace MooglePost;
 
-class Client {
-	private $url = 'https://mooglepost.com/api/v1/send';
-	private $apiKey;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
 
-	public function __construct($apiKey) {
-		$this->apiKey = $apiKey;
-	}
+class Client implements ClientInterface
+{
+    private $apiKey;
+    private $apiUrl;
 
-	public function send($to, $templateName, array $variables = array(), $subject = NULL, $text = NULL, $html = NULL) {
-		$email = new Email($to);
-		$email->setTemplateName($templateName)
-		      ->setVariables($variables)
-		      ->setSubject($subject)
-		      ->setText($text)
-		      ->setHtml($html);
+    public function __construct(string $apiKey, string $apiUrl = 'https://mooglepost.com/api/v1/')
+    {
+        $this->setApiKey($apiKey);
+        $this->setApiUrl($apiUrl);
+    }
 
-		return $this->sendEmail($email);
-	}
+    public function setApiKey(string $apiKey): ClientInterface
+    {
+        $this->apiKey = $apiKey;
 
-	public function sendEmail(Email $email) {
-		try {
-			$HttpClient = new \Phyrexia\Http\Client();
-			$HttpRequest = new \Phyrexia\Http\Request('POST', $this->url, array('X-Mglpst-ApiKey' => $this->apiKey));
-			$HttpClient->setRequest($HttpRequest);
-			$HttpClient->setPostData(json_encode($email));
-			$HttpResponse = $HttpClient->send();
-		} catch (\Phyrexia\Http\ClientException $e) {
-			throw new ClientException($e->getMessage(), $e->getCode(), $e);
-		}
+        return $this;
+    }
 
-		$ret = json_decode((string)$HttpResponse, true);
-		if ($ret['status'] != 'OK') {
-			throw new ClientException($ret['message'], $ret['code']);
-		}
+    public function setApiUrl(string $apiUrl): self
+    {
+        $this->apiUrl = $apiUrl;
 
-		return true;
-	}
+        return $this;
+    }
+
+    public function send(
+        string $to,
+        string $templateName,
+        array $variables = [],
+        string $subject = null,
+        string $text = null,
+        string $html = null
+    ): bool {
+        $email = new Email();
+        $email->addRecipient($to);
+        $email->setTemplateName($templateName);
+        $email->setVariables($variables);
+
+        $email->setSubject($subject);
+        $email->setText($text);
+        $email->setHtml($html);
+
+        return $this->sendEmail($email);
+    }
+
+    public function sendEmail(EmailInterface $email): bool
+    {
+        try {
+            $httpClient = new \GuzzleHttp\Client([
+                'base_uri' => $this->apiUrl
+            ]);
+            $httpRequest = new Request(
+                'POST',
+                'send',
+                [
+                    'X-Mglpst-ApiKey' => $this->apiKey
+                ],
+                (string) $email
+            );
+            $httpResponse = $httpClient->send($httpRequest);
+        } catch (GuzzleException $e) {
+            throw new ClientException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $ret = json_decode((string) $httpResponse->getBody(), true);
+        if ($ret['status'] !== 'OK') {
+            throw new ClientException($ret['message'], $ret['code']);
+        }
+
+        return true;
+    }
 }
