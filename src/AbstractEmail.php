@@ -82,8 +82,8 @@ abstract class AbstractEmail implements EmailInterface, JsonSerializable, String
     public function jsonSerialize()
     {
         return [
-            'templateName' => $this->getTemplateName(),
             'recipients' => $this->getRecipients(),
+            'templateName' => $this->getTemplateName(),
             'variables' =>  $this->getVariables(),
         ];
     }
