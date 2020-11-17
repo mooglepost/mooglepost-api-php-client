@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AbstractEmail/Recipient.php
+ * Email/Recipient.php
  *
  * @author Jérémy 'Jejem' Desvages <jejem@phyrexia.org>
  * @copyright Jérémy 'Jejem' Desvages
