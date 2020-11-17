@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ClientException.php
  *
@@ -9,4 +10,8 @@
 
 namespace MooglePost;
 
-class ClientException extends \Exception {}
+use Exception;
+
+class ClientException extends Exception
+{
+}

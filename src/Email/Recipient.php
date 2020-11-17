@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Email/Recipient.php
  *
@@ -9,28 +10,28 @@
 
 namespace MooglePost\Email;
 
-class Recipient implements \JsonSerializable {
-	private $email;
+use JsonSerializable;
 
-	public function __construct($email) {
-		$this->setEmail($email);
-	}
+class Recipient implements JsonSerializable
+{
+    private $email;
 
-	public function getEmail() {
-		return $this->email;
-	}
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
 
-	public function setEmail($email) {
-		$this->email = $email;
+    public function setEmail(string $email): Recipient
+    {
+        $this->email = $email;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function jsonSerialize() {
-		$array = array(
-			'email' => $this->getEmail()
-		);
-
-		return $array;
-	}
+    public function jsonSerialize()
+    {
+        return [
+            'email' => $this->getEmail()
+        ];
+    }
 }
