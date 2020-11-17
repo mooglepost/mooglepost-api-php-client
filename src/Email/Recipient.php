@@ -11,8 +11,9 @@
 namespace MooglePost\Email;
 
 use JsonSerializable;
+use Stringable;
 
-class Recipient implements JsonSerializable
+class Recipient implements JsonSerializable, Stringable
 {
     private $email;
 
@@ -40,7 +41,7 @@ class Recipient implements JsonSerializable
         ];
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode($this);
     }

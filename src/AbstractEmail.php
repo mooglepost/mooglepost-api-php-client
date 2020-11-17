@@ -11,8 +11,9 @@
 namespace MooglePost;
 
 use JsonSerializable;
+use Stringable;
 
-abstract class AbstractEmail implements EmailInterface, JsonSerializable
+abstract class AbstractEmail implements EmailInterface, JsonSerializable, Stringable
 {
     private $recipients = [];
     private $templateName;
