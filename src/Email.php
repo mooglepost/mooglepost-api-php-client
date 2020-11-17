@@ -1,142 +1,107 @@
 <?php
+
 /**
  * Email.php
  *
  * @author Jérémy 'Jejem' Desvages <jejem@phyrexia.org>
  * @copyright Jérémy 'Jejem' Desvages
  * @license The MIT License (MIT)
-**/
+ */
 
 namespace MooglePost;
 
-class Email implements \JsonSerializable {
-	private $templateName;
-	private $variables = array();
-	private $subject;
-	private $text;
-	private $html;
-	private $recipients = array();
-	private $embedded = array();
+class Email extends AbstractEmail
+{
+    private $subject;
+    private $text;
+    private $html;
+    private $embeds = [];
+    private $attachments = [];
 
-	public function __construct($email) {
-		$this->addRecipient($email);
-	}
+    public function getSubject(): ?string
+    {
+        return $this->subject;
+    }
 
-	public function getRecipients() {
-		return $this->recipients;
-	}
+    public function setSubject(?string $subject): self
+    {
+        $this->subject = $subject;
 
-	public function addRecipient($email) {
-		foreach ($this->recipients as $k => $recipient) {
-			if (strtolower($recipient->getEmail()) == strtolower($email)) {
-				return true;
-			}
-		}
+        return $this;
+    }
 
-		$recipient = new Email\Recipient($email);
-		$this->recipients[] = $recipient;
+    public function getText(): ?string
+    {
+        return $this->text;
+    }
 
-		$this->recipients = array_values($this->recipients);
+    public function setText(?string $text): self
+    {
+        $this->text = $text;
 
-		return true;
-	}
+        return $this;
+    }
 
-	public function removeRecipient($email) {
-		foreach ($this->recipients as $k => $recipient) {
-			if (strtolower($recipient->getEmail()) == strtolower($email)) {
-				unset($this->recipients[$k]);
-			}
-		}
+    public function getHtml(): ?string
+    {
+        return $this->html;
+    }
 
-		$this->recipients = array_values($this->recipients);
+    public function setHtml(?string $html): self
+    {
+        $this->html = $html;
 
-		return true;
-	}
+        return $this;
+    }
 
-	public function getVariables() {
-		return $this->variables;
-	}
+    public function getEmbeds(): array
+    {
+        return $this->embeds;
+    }
 
-	public function setVariables(array $variables) {
-		$this->variables = $variables;
+    public function addEmbed(array $embed): self
+    {
+        $this->embeds[] = $embed;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getTemplateName() {
-		return $this->templateName;
-	}
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
 
-	public function setTemplateName($templateName) {
-		$this->templateName = $templateName;
+    public function addAttachment(array $attachment): self
+    {
+        $this->attachments[] = $attachment;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getSubject() {
-		return $this->subject;
-	}
+    public function jsonSerialize()
+    {
+        $array = [];
 
-	public function setSubject($subject) {
-		$this->subject = $subject;
+        if ($this->getSubject() !== null) {
+            $array['subject'] = $this->getSubject();
+        }
 
-		return $this;
-	}
+        if ($this->getText() !== null) {
+            $array['text'] = $this->getText();
+        }
 
-	public function getText() {
-		return $this->text;
-	}
+        if ($this->getHtml() !== null) {
+            $array['html'] = $this->getHtml();
+        }
 
-	public function setText($text) {
-		$this->text = $text;
+        if (count($this->getEmbedded()) > 0) {
+            $array['embedded'] = $this->getEmbedded();
+        }
 
-		return $this;
-	}
+        if (count($this->getAttachments()) > 0) {
+            $array['attachments'] = $this->getAttachments();
+        }
 
-	public function getHtml() {
-		return $this->html;
-	}
-
-	public function setHtml($html) {
-		$this->html = $html;
-
-		return $this;
-	}
-
-	public function addEmbedded(array $embedded) {
-		$this->embedded[] = $embedded;
-
-		return true;
-	}
-
-	public function getEmbedded() {
-		return $this->embedded;
-	}
-
-	public function jsonSerialize() {
-		$array = array(
-			'templateName' => $this->getTemplateName(),
-			'recipients' => $this->getRecipients()
-		);
-
-		if (is_array($this->getVariables()) && count($this->getVariables()) > 0) {
-			$array['variables'] = $this->getVariables();
-		}
-
-		if (! is_null($this->getSubject())) {
-			$array['subject'] = $this->getSubject();
-		}
-		if (! is_null($this->getText())) {
-			$array['text'] = $this->getText();
-		}
-		if (! is_null($this->getHtml())) {
-			$array['html'] = $this->getHtml();
-		}
-
-		if (count($this->getEmbedded()) > 0) {
-			$array['embedded'] = $this->getEmbedded();
-		}
-
-		return $array;
-	}
+        return array_merge(parent::jsonSerialize(), $array);
+    }
 }
