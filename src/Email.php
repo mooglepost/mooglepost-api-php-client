@@ -15,7 +15,7 @@ class Email extends AbstractEmail
     private $subject;
     private $text;
     private $html;
-    private $embedded = [];
+    private $embeds = [];
     private $attachments = [];
 
     public function getSubject(): ?string
@@ -54,14 +54,14 @@ class Email extends AbstractEmail
         return $this;
     }
 
-    public function getEmbedded(): array
+    public function getEmbeds(): array
     {
-        return $this->embedded;
+        return $this->embeds;
     }
 
-    public function addEmbedded(array $embedded): self
+    public function addEmbed(array $embed): self
     {
-        $this->embedded[] = $embedded;
+        $this->embeds[] = $embed;
 
         return $this;
     }
