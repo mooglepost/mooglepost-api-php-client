@@ -14,4 +14,17 @@ use Exception;
 
 class ClientException extends Exception
 {
+    private array $recipients = [];
+
+    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null, array $recipients = [])
+    {
+        parent::__construct($message, $code, $previous);
+
+        $this->recipients = $recipients;
+    }
+
+    public function getRecipients(): array
+    {
+        return $this->recipients;
+    }
 }

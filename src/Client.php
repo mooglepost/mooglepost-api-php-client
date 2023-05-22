@@ -38,6 +38,9 @@ class Client implements ClientInterface
         return $this;
     }
 
+    /**
+     * @throws ClientException
+     */
     public function send(
         string $to,
         string $templateName,
@@ -58,6 +61,9 @@ class Client implements ClientInterface
         return $this->sendEmail($email);
     }
 
+    /**
+     * @throws ClientException
+     */
     public function sendEmail(EmailInterface $email): bool
     {
         try {
@@ -79,7 +85,7 @@ class Client implements ClientInterface
 
         $ret = json_decode((string) $httpResponse->getBody(), true);
         if ($ret['status'] !== 'OK') {
-            throw new ClientException($ret['message'], $ret['code']);
+            throw new ClientException($ret['message'], $ret['code'], null, $ret['recipients'] ?? []);
         }
 
         return true;
