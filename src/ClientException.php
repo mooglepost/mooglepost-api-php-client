@@ -11,6 +11,7 @@
 namespace MooglePost;
 
 use Exception;
+use Throwable;
 
 class ClientException extends Exception
 {
